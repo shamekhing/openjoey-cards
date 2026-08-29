@@ -1,6 +1,13 @@
 cmake_minimum_required(VERSION 3.21)
 project(openjoey-cards VERSION 0.0.1 LANGUAGES CXX)
 
+# ── Standalone support: bootstrap sibling deps unless a superbuild did ───────
+if(NOT TARGET openjoey_core)
+  set(OPENJOEY_DEPS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/.." CACHE PATH
+      "Directory containing the sibling openjoey-* repos")
+  add_subdirectory("${OPENJOEY_DEPS_DIR}/openjoey-core" ${CMAKE_BINARY_DIR}/openjoey-core)
+endif()
+
 # ── openjoey_cards: card domain logic. Raylib-free on purpose: gameplay and
 #    its tests link ONLY this target and must never pull in raylib.
 add_library(openjoey_cards INTERFACE)
