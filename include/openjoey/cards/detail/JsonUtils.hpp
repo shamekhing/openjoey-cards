@@ -1,13 +1,15 @@
 #pragma once
-#include "card/Card.hpp"
-#include <iostream>
+// ── Internal JSON mapping helpers for CardParser. ────────────────────────────
+// NOT part of the public API: include "openjoey/cards/CardParser.hpp" instead.
+#include <cstdint>
 #include <nlohmann/json.hpp>
-#include <unordered_set>
+#include <string>
 
-namespace openjoey {
-// ── YGOProDeck API (`{ "data": [ { ... }, ... ] }`)
+namespace openjoey::cards::detail {
 
-static int parseStatField(const nlohmann::json &j, const char *key) {
+// YGOProDeck occasionally encodes stats as "?" or strings; anything
+// unparseable maps to 0.
+inline int parseStatField(const nlohmann::json &j, const char *key) {
   if (!j.contains(key))
     return 0;
   const auto &v = j.at(key);
@@ -32,7 +34,7 @@ static int parseStatField(const nlohmann::json &j, const char *key) {
   return 0;
 }
 
-static int optIntMember(const nlohmann::json &j, const char *key, int def = 0) {
+inline int optIntMember(const nlohmann::json &j, const char *key, int def = 0) {
   auto it = j.find(key);
   if (it == j.end() || it->is_null() || !it->is_number())
     return def;
@@ -43,7 +45,7 @@ static int optIntMember(const nlohmann::json &j, const char *key, int def = 0) {
   return static_cast<int>(it->get<double>());
 }
 
-static std::string optStringMember(const nlohmann::json &j, const char *key,
+inline std::string optStringMember(const nlohmann::json &j, const char *key,
                                    const std::string &def = {}) {
   auto it = j.find(key);
   if (it == j.end() || it->is_null() || !it->is_string())
@@ -51,7 +53,7 @@ static std::string optStringMember(const nlohmann::json &j, const char *key,
   return it->get<std::string>();
 }
 
-static uint32_t optCardId(const nlohmann::json &j) {
+inline uint32_t optCardId(const nlohmann::json &j) {
   auto it = j.find("id");
   if (it == j.end() || it->is_null())
     return 0;
@@ -66,12 +68,14 @@ static uint32_t optCardId(const nlohmann::json &j) {
   return 0;
 }
 
-static Card cardFromYgoProDeckJson(const nlohmann::json &j) {
+// YGOProDeck entry → Card. Only well-formed numeric/string members are read;
+// nothing here throws for missing fields.
+inline Card cardFromYgoProDeckJson(const nlohmann::json &j) {
   Card c;
   c.cardId = optCardId(j);
   c.name = optStringMember(j, "name");
   c.description = optStringMember(j, "desc");
-  c.imageId = c.cardId;
+  c.imageId = c.cardId; // image filename == ygopro id (see fetch scripts)
 
   const std::string frame = optStringMember(j, "frameType");
 
@@ -87,42 +91,9 @@ static Card cardFromYgoProDeckJson(const nlohmann::json &j) {
   c.level = optIntMember(j, "level", 0);
   const int rank = optIntMember(j, "rank", 0);
   if (c.level == 0 && rank > 0)
-    c.level = rank;
+    c.level = rank; // Xyz monsters carry rank, not level
 
   return c;
 }
 
-static bool tryLoadYgoProDeckJson(const std::string &content,
-                                  std::vector<Card> *out) {
-  try {
-    const auto root = nlohmann::json::parse(content);
-    if (!root.is_object() || !root.contains("data") ||
-        !root.at("data").is_array())
-      return false;
-    std::unordered_set<uint32_t> seenIds;
-    for (const auto &item : root.at("data")) {
-      if (!item.is_object())
-        continue;
-      try {
-        Card card = cardFromYgoProDeckJson(item);
-        if (card.cardId == 0)
-          continue;
-        if (card.name.empty())
-          card.name = "Card " + std::to_string(card.cardId);
-        if (!seenIds.insert(card.cardId).second)
-          continue;
-        out->push_back(std::move(card));
-      } catch (const std::exception &) {
-        // Skip malformed entries; keep loading the rest of the database.
-      }
-    }
-    return !out->empty();
-  } catch (const nlohmann::json::exception &ex) {
-    std::cerr << "[CardDatabase] YGOProDeck JSON: " << ex.what() << "\n";
-    return false;
-  } catch (const std::exception &ex) {
-    std::cerr << "[CardDatabase] JSON load: " << ex.what() << "\n";
-    return false;
-  }
-}
-} // namespace openjoey
+} // namespace openjoey::cards::detail

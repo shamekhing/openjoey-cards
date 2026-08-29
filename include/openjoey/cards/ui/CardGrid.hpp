@@ -1,9 +1,10 @@
 #pragma once
-#include "card/Card.hpp"
+#include "openjoey/cards/Card.hpp"
+#include "openjoey/cards/ui/CardImageCache.hpp"
+#include "openjoey/cards/ui/CardList.hpp"
+#include "openjoey/cards/ui/TextFit.hpp"
+#include "openjoey/cards/ui/Thumbnail.hpp"
 #include "ui/StyleSheet.hpp"
-#include "card/ui/CardImageCache.hpp"
-#include "card/ui/CardList.hpp"
-#include "card/ui/Thumbnail.hpp"
 #include <algorithm>
 #include <raylib.h>
 #include <string>
@@ -49,11 +50,7 @@ struct CardGrid {
             int cy = y + gap + visRow * cellH;
             Thumbnail::Draw(card, cache, cx, cy, cardW, cardH, typeCol);
 
-            std::string name = card.name;
-            while (!name.empty() &&
-                   MeasureText(name.c_str(), FONT_CARD_STAT) > cardW)
-                name.pop_back();
-            if (name.size() < card.name.size()) name += "~";
+            std::string name = fitText(card.name, cardW, FONT_CARD_STAT);
             DrawText(name.c_str(), cx, cy + cardH + 2,
                      FONT_CARD_STAT, sel ? YELLOW : COLOR_STAT_TEXT);
 

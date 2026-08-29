@@ -1,5 +1,5 @@
 #pragma once
-#include "card/Card.hpp"
+#include "openjoey/cards/Card.hpp"
 #include "ui/StyleSheet.hpp"
 #include "ui/widgets/display/ProgressBar.hpp"
 #include <raylib.h>

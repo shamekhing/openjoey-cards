@@ -1,6 +1,6 @@
 #pragma once
-#include "card/Card.hpp"
-#include "card/ui/CardImageCache.hpp"
+#include "openjoey/cards/Card.hpp"
+#include "openjoey/cards/ui/CardImageCache.hpp"
 #include "ui/StyleSheet.hpp"
 #include <raylib.h>
 

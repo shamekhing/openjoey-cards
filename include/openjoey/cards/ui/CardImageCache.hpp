@@ -1,5 +1,5 @@
 #pragma once
-#include "card/Card.hpp"
+#include "openjoey/cards/Card.hpp"
 #include <atomic>
 #include <condition_variable>
 #include <cstdlib>
@@ -22,7 +22,7 @@ namespace openjoey::ui {
 // Single instance lives in AppContext and is shared across all screens.
 class CardImageCache {
 public:
-        CardImageCache(std::filesystem::path imgDir,
+    CardImageCache(std::filesystem::path imgDir,
                    std::string ygoprodeckUrl = "https://images.ygoprodeck.com/images/cards/",
                    std::string ygoprodeckUrlSmall = "https://images.ygoprodeck.com/images/cards_small/")
         : imgDir_(std::move(imgDir)),
@@ -117,7 +117,7 @@ private:
                 job = std::move(jobQueue_.front());
                 jobQueue_.pop();
             }
-                        bool ok = curlDownload(baseUrl_ + std::to_string(job.id) + ".jpg", job.dest);
+            bool ok = curlDownload(baseUrl_ + std::to_string(job.id) + ".jpg", job.dest);
             if (!ok)
                 ok = curlDownload(baseUrlSmall_ + std::to_string(job.id) + ".jpg", job.dest);
             if (ok) {
@@ -144,7 +144,7 @@ private:
         return false;
     }
 
-        std::filesystem::path            imgDir_;
+    std::filesystem::path            imgDir_;
     std::string                      baseUrl_;
     std::string                      baseUrlSmall_;
     std::unordered_map<uint32_t, Texture2D> textures_;

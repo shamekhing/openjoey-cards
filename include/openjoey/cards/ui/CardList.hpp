@@ -1,8 +1,9 @@
 #pragma once
-#include "card/Card.hpp"
+#include "openjoey/cards/Card.hpp"
+#include "openjoey/cards/ui/CardImageCache.hpp"
+#include "openjoey/cards/ui/TextFit.hpp"
+#include "openjoey/cards/ui/Thumbnail.hpp"
 #include "ui/StyleSheet.hpp"
-#include "card/ui/CardImageCache.hpp"
-#include "card/ui/Thumbnail.hpp"
 #include <functional>
 #include <raylib.h>
 #include <string>
@@ -37,15 +38,11 @@ struct CardList {
         if (!stat.empty())
             DrawText(stat.c_str(), textX, y + CARD_STAT_Y, FONT_CARD_STAT, COLOR_STAT_TEXT);
 
-        std::string name = card.name;
-        int maxNameW = w - textX - nmRight;
-        while (!name.empty() && MeasureText(name.c_str(), FONT_CARD_NAME) > maxNameW)
-            name.pop_back();
-        if (name.size() < card.name.size()) name += "~";
+        std::string name = fitText(card.name, w - textX - nmRight, FONT_CARD_NAME);
         DrawText(name.c_str(), textX, y + CARD_NAME_Y, FONT_CARD_NAME, selected ? YELLOW : WHITE);
 
         Color cpCol = (copies >= maxCopies) ? RED : (copies > 0 ? GREEN : GRAY);
-        DrawText((std::to_string(copies) + "/3").c_str(),
+        DrawText((std::to_string(copies) + "/" + std::to_string(maxCopies)).c_str(),
                  x + w - cpXOff, y + CARD_TYPE_Y, FONT_CARD_TYPE, cpCol);
 
         if (selected)
