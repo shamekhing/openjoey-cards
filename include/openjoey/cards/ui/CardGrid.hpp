@@ -4,7 +4,7 @@
 #include "openjoey/cards/ui/CardList.hpp"
 #include "openjoey/cards/ui/TextFit.hpp"
 #include "openjoey/cards/ui/Thumbnail.hpp"
-#include "ui/StyleSheet.hpp"
+#include "openjoey/uikit/StyleSheet.hpp"
 #include <algorithm>
 #include <raylib.h>
 #include <string>

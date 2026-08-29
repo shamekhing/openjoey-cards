@@ -1,7 +1,7 @@
 #pragma once
 #include "openjoey/cards/Card.hpp"
 #include "openjoey/cards/ui/CardImageCache.hpp"
-#include "ui/StyleSheet.hpp"
+#include "openjoey/uikit/StyleSheet.hpp"
 #include <raylib.h>
 
 namespace openjoey::ui {

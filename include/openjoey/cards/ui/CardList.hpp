@@ -3,7 +3,7 @@
 #include "openjoey/cards/ui/CardImageCache.hpp"
 #include "openjoey/cards/ui/TextFit.hpp"
 #include "openjoey/cards/ui/Thumbnail.hpp"
-#include "ui/StyleSheet.hpp"
+#include "openjoey/uikit/StyleSheet.hpp"
 #include <functional>
 #include <raylib.h>
 #include <string>
