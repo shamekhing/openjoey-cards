@@ -29,6 +29,10 @@ struct Card {
 
   // Card classification
   CardType type = CardType::Monster;
+  // Fine-grained frame: "normal", "effect", "fusion", "ritual", "synchro",
+  // "xyz", "spell", "trap" (derived from the YGOProDeck type string; empty
+  // until parsed). Lets consumers route Extra-Deck monsters correctly.
+  std::string frameType;
 
   // Equality is identity-by-id: two Cards are equal iff both have a non-zero
   // cardId and the ids match. An id-less Card (cardId == 0) equals nothing.
@@ -70,6 +74,12 @@ struct Card {
   bool isMonster() const { return type == CardType::Monster; }
   bool isSpell() const { return type == CardType::Spell; }
   bool isTrap() const { return type == CardType::Trap; }
+  // Fusion/Synchro/Xyz monsters are built in the Extra Deck (classic: only
+  // Fusion exists; the others are still routed there for completeness).
+  bool isExtraDeckMonster() const {
+    return frameType == "fusion" || frameType == "synchro" ||
+           frameType == "xyz";
+  }
   std::string cardTypeTag() const {
     return this->isMonster() ? "[MON]"
            : this->isSpell() ? "[SPL]"

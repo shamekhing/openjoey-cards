@@ -54,6 +54,12 @@ TEST_CASE("CardDatabase loads the starter cards.json", "[db]") {
         // imageId mirrors cardId (CardParser sets it)
         REQUIRE(be->imageId == be->cardId);
         REQUIRE(be->imageId == 89631139);
+
+        // frameType carries the YGOProDeck frame verbatim (drives Extra-Deck
+        // routing and other subtype behavior downstream).
+        REQUIRE(be->frameType == "normal");
+        REQUIRE(mf->frameType == "trap");
+        REQUIRE(ra->frameType == "spell");
     }
 }
 

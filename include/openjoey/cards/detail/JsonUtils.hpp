@@ -78,6 +78,7 @@ inline Card cardFromYgoProDeckJson(const nlohmann::json &j) {
   c.imageId = c.cardId; // image filename == ygopro id (see fetch scripts)
 
   const std::string frame = optStringMember(j, "frameType");
+  c.frameType = frame; // "normal"/"effect"/"fusion"/"ritual"/... verbatim
 
   if (frame == "spell" || frame == "skill")
     c.type = CardType::Spell;
