@@ -63,3 +63,9 @@ API changes in 0.1.0: `Card::sortBy*` → `cards::compare::by*`;
 `std::cerr`); `CardDatabase` is move-only (copying would dangle its index).
 
 Extracted from OpenJoey2@21f1d8e. Depends on: core (+ uikit for UI).
+
+## License
+
+Licensed under the PolyForm Noncommercial License 1.0.0 — see
+[`LICENSE`](LICENSE). Free for noncommercial use; commercial use requires a
+paid license from the copyright holder (shamekhing@gmail.com).

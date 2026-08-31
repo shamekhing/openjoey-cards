@@ -1,6 +1,6 @@
 # openjoey-cards — API contract
 
-Version 0.1.0 · header-only · C++17 · GPL-3.0
+Version 0.1.0 · header-only · C++17 · PolyForm-Noncommercial-1.0.0
 
 This document is the stable contract between `openjoey-cards` and its
 consumers (`openjoey-gameplay`, `openjoey-app`, and any future repo under the
