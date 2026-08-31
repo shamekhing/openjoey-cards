@@ -8,5 +8,6 @@
 #include "openjoey/cards/ui/Thumbnail.hpp"
 #include "openjoey/cards/ui/CardList.hpp"
 #include "openjoey/cards/ui/CardGrid.hpp"
+#include "openjoey/cards/ui/CardPreview.hpp"
 #include "openjoey/cards/ui/DeckStats.hpp"
 #include "openjoey/cards/ui/TextFit.hpp"

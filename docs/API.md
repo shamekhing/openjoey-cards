@@ -102,6 +102,13 @@ download thread (main-thread `Get()`/`PollAndLoad()` per frame). `fitText()`
 ellipsizes a string to a pixel width. StyleSheet constants come from
 `openjoey::uikit`.
 
+`CardPreview` (`cards/ui/CardPreview.hpp`, v0.2) — the one *stateful* widget:
+portrait image, type/stat line, and a scrollable description with
+`SetCard()`/`SetCardBack()`/`scroll()`; call `SetCard()` each frame before
+`Draw(bounds, cache)`. Used by the app's duel and image-cache test screens.
+Note: `openjoey::ui` widgets that are card-domain live here (`cards/ui/`),
+not in the app — app-local layout stays in `openjoey-app/include/ui/`.
+
 ## 5. Planned evolution (v0.2)
 
 The def/state split: `Card` currently mixes definition and duel-state fields.

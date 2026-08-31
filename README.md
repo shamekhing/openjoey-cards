@@ -16,7 +16,7 @@ One include each:
 
 ```cpp
 #include <openjoey/cards.hpp>      // domain: Card, CardEffect, CardDatabase, parser, comparators
-#include <openjoey/cards_ui.hpp>   // widgets: CardGrid, CardList, DeckStats, Thumbnail, CardImageCache
+#include <openjoey/cards_ui.hpp>   // widgets: CardGrid, CardList, CardPreview, DeckStats, Thumbnail, CardImageCache
 ```
 
 Layout under `include/openjoey/`:
