@@ -7,7 +7,7 @@
 
 namespace openjoey::cards::detail {
 
-// YGOProDeck occasionally encodes stats as "?" or strings; anything
+// Remote providers occasionally encode stats as "?" or strings; anything
 // unparseable maps to 0.
 inline int parseStatField(const nlohmann::json &j, const char *key) {
   if (!j.contains(key))
@@ -68,14 +68,14 @@ inline uint32_t optCardId(const nlohmann::json &j) {
   return 0;
 }
 
-// YGOProDeck entry → Card. Only well-formed numeric/string members are read;
-// nothing here throws for missing fields.
-inline Card cardFromYgoProDeckJson(const nlohmann::json &j) {
+// Remote card-data entry → Card. Only well-formed numeric/string members are
+// read; nothing here throws for missing fields.
+inline Card cardFromRemoteJson(const nlohmann::json &j) {
   Card c;
   c.cardId = optCardId(j);
   c.name = optStringMember(j, "name");
   c.description = optStringMember(j, "desc");
-  c.imageId = c.cardId; // image filename == ygopro id (see fetch scripts)
+  c.imageId = c.cardId; // image filename == remote card id (see fetch scripts)
 
   const std::string frame = optStringMember(j, "frameType");
   c.frameType = frame; // "normal"/"effect"/"fusion"/"ritual"/... verbatim

@@ -1,7 +1,7 @@
 # openjoey-cards
 
-Card domain for the OpenJoey split: card types, YGOProDeck parsing, the card
-database, and card UI widgets. Header-only, C++17.
+Card domain for the OpenJoey split: card types, remote card-data parsing, the
+card database, and card UI widgets. Header-only, C++17.
 
 ## Targets
 
@@ -26,7 +26,7 @@ Layout under `include/openjoey/`:
 | `cards/Card.hpp` | `struct Card` (identity + duel state + presentation helpers) |
 | `cards/CardEnums.hpp` | `CardType`, `Position`, `Location` |
 | `cards/CardEffect.hpp` | `EffectType`, `CardEffect` (brace-init order is a frozen contract) |
-| `cards/CardParser.hpp` | `cards::parseYgoProDeckJson()` → `ParseResult{cards, errors}` |
+| `cards/CardParser.hpp` | `cards::parseRemoteCardJson()` → `ParseResult{cards, errors}` |
 | `cards/CardDatabase.hpp` | `CardDatabase` — move-only, ODR-safe, deterministic search |
 | `cards/Compare.hpp` | `cards::compare::{byName,byType,byId,byLevel,byAtk,byDef}` |
 | `cards/ui/…` | Widgets (cards_ui target only) |
@@ -59,7 +59,7 @@ automatically; its `ctest` run includes `openjoey_cards_tests`.
 
 API changes in 0.1.0: `Card::sortBy*` → `cards::compare::by*`;
 `CardDatabase::GetCardsByName` → `CardDatabase::FindByName` (now deterministic);
-`tryLoadYgoProDeckJson` → `cards::parseYgoProDeckJson` (errors returned, no
+`tryLoadRemoteCardJson` → `cards::parseRemoteCardJson` (errors returned, no
 `std::cerr`); `CardDatabase` is move-only (copying would dangle its index).
 
 Extracted from OpenJoey2@21f1d8e. Depends on: core (+ uikit for UI).

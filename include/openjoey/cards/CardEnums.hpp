@@ -3,7 +3,7 @@
 
 namespace openjoey {
 
-// Card classification: one of the three YGO frame families this engine models.
+// Card classification: one of the three card frame families this engine models.
 enum class CardType : uint8_t { Monster, Spell, Trap };
 
 // ── Duel-runtime placement enums ─────────────────────────────────────────────

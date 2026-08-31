@@ -64,10 +64,10 @@ order must not change without a coordinated version bump. Defaults:
 ### `openjoey::cards::ParseError` / `ParseResult` (`cards/CardParser.hpp`)
 
 ```cpp
-ParseResult cards::parseYgoProDeckJson(const std::string &content);
+ParseResult cards::parseRemoteCardJson(const std::string &content);
 ```
 
-* Input: a YGOProDeck API payload (`{"data": [ ... ]}`).
+* Input: a remote card-data provider payload (`{"data": [ ... ]}`).
 * Never throws, never writes to stderr; problems land in `result.errors`.
 * Cards are de-duplicated by `cardId` (first entry wins, input order kept).
 * Entries without a usable id are skipped; nameless cards get `"Card <id>"`.

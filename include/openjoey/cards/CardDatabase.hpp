@@ -39,12 +39,12 @@ public:
     return LoadFromString(content);
   }
 
-  // Parses a YGOProDeck payload already held in memory (see
-  // openjoey::cards::parseYgoProDeckJson). On failure the database is left
+  // Parses a remote card-data payload already held in memory (see
+  // openjoey::cards::parseRemoteCardJson). On failure the database is left
   // empty and false is returned.
   bool LoadFromString(const std::string &content) {
     Clear();
-    cards::ParseResult parsed = cards::parseYgoProDeckJson(content);
+    cards::ParseResult parsed = cards::parseRemoteCardJson(content);
     if (!parsed.ok())
       return false;
 

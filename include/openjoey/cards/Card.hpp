@@ -23,15 +23,16 @@ namespace openjoey {
 struct Card {
   // ── Definition: identity ───────────────────────────────────────────────────
   std::string name;
-  uint32_t cardId = 0;   // ygoproId, 0 = use cardId only
+  uint32_t cardId = 0;   // remote card id, 0 = use cardId only
   uint32_t imageId = 0;  // mirrors cardId (set by CardParser)
   std::string description;
 
   // Card classification
   CardType type = CardType::Monster;
   // Fine-grained frame: "normal", "effect", "fusion", "ritual", "synchro",
-  // "xyz", "spell", "trap" (derived from the YGOProDeck type string; empty
-  // until parsed). Lets consumers route Extra-Deck monsters correctly.
+  // "xyz", "spell", "trap" (derived from the remote data provider's type
+  // string; empty until parsed). Lets consumers route Extra-Deck monsters
+  // correctly.
   std::string frameType;
 
   // Equality is identity-by-id: two Cards are equal iff both have a non-zero

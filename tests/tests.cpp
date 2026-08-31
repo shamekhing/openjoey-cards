@@ -55,7 +55,7 @@ TEST_CASE("CardDatabase loads the starter cards.json", "[db]") {
         REQUIRE(be->imageId == be->cardId);
         REQUIRE(be->imageId == 89631139);
 
-        // frameType carries the YGOProDeck frame verbatim (drives Extra-Deck
+        // frameType carries the remote-provider frame verbatim (drives Extra-Deck
         // routing and other subtype behavior downstream).
         REQUIRE(be->frameType == "normal");
         REQUIRE(mf->frameType == "trap");
@@ -78,7 +78,7 @@ TEST_CASE("FindByName substring search is deterministic", "[db]") {
         REQUIRE(all[i - 1]->cardId < all[i]->cardId);
 }
 
-TEST_CASE("LoadFromString parses an inline YGOProDeck payload", "[db][parser]") {
+TEST_CASE("LoadFromString parses an inline remote card-data payload", "[db][parser]") {
     CardDatabase db;
     REQUIRE(db.LoadFromString(R"({"data":[
         {"id":111,"name":"Alpha","desc":"","frameType":"normal","atk":100,"def":50,"level":2},
@@ -129,15 +129,15 @@ TEST_CASE("Database is movable but not copyable", "[db]") {
 // --- CardParser --------------------------------------------------------------
 
 TEST_CASE("Parser rejects malformed payloads without throwing", "[parser]") {
-    REQUIRE_FALSE(cards::parseYgoProDeckJson("").ok());
-    REQUIRE_FALSE(cards::parseYgoProDeckJson("not json at all").ok());
-    REQUIRE_FALSE(cards::parseYgoProDeckJson(R"({"data": 42})").ok());
-    REQUIRE_FALSE(cards::parseYgoProDeckJson(R"([1,2,3])").ok());
+    REQUIRE_FALSE(cards::parseRemoteCardJson("").ok());
+    REQUIRE_FALSE(cards::parseRemoteCardJson("not json at all").ok());
+    REQUIRE_FALSE(cards::parseRemoteCardJson(R"({"data": 42})").ok());
+    REQUIRE_FALSE(cards::parseRemoteCardJson(R"([1,2,3])").ok());
 }
 
 TEST_CASE("Parser maps stat edge cases to sane values", "[parser]") {
     SECTION("'?' and string stats parse to 0") {
-        auto r = cards::parseYgoProDeckJson(
+        auto r = cards::parseRemoteCardJson(
             R"({"data":[{"id":333,"name":"Mystic","frameType":"normal","atk":"?","def":"?","level":4}]})");
         REQUIRE(r.ok());
         REQUIRE(r.errors.empty());
@@ -147,19 +147,19 @@ TEST_CASE("Parser maps stat edge cases to sane values", "[parser]") {
         REQUIRE(r.cards[0].level == 4);
     }
     SECTION("missing name is synthesized from the id") {
-        auto r = cards::parseYgoProDeckJson(R"({"data":[{"id":444,"frameType":"trap"}]})");
+        auto r = cards::parseRemoteCardJson(R"({"data":[{"id":444,"frameType":"trap"}]})");
         REQUIRE(r.ok());
         REQUIRE(r.cards[0].name == "Card 444");
         REQUIRE(r.cards[0].isTrap());
     }
     SECTION("rank falls back into level for Xyz frames") {
-        auto r = cards::parseYgoProDeckJson(
+        auto r = cards::parseRemoteCardJson(
             R"({"data":[{"id":555,"name":"Xyz","frameType":"xyz","rank":5}]})");
         REQUIRE(r.ok());
         REQUIRE(r.cards[0].level == 5);
     }
     SECTION("non-object entries are skipped, not fatal") {
-        auto r = cards::parseYgoProDeckJson(
+        auto r = cards::parseRemoteCardJson(
             R"({"data":[42,{"id":666,"name":"Ok","frameType":"spell"}]})");
         REQUIRE(r.ok());
         REQUIRE(r.cards.size() == 1);

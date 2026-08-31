@@ -20,13 +20,13 @@ struct ParseResult {
   bool ok() const { return !cards.empty(); }
 };
 
-// ── YGOProDeck API (`{ "data": [ { ... }, ... ] }`) ──────────────────────────
+// ── Remote card-data API (`{ "data": [ { ... }, ... ] }`) ────────────────────
 // Parses a payload already held in memory. Guarantees:
 //   * cards are de-duplicated by cardId — first entry wins, input order kept
 //   * entries with an unusable id are skipped and reported in `errors`
 //   * nameless cards get "Card <id>"
 //   * imageId == cardId for every parsed card
-inline ParseResult parseYgoProDeckJson(const std::string &content) {
+inline ParseResult parseRemoteCardJson(const std::string &content) {
   ParseResult result;
 
   nlohmann::json root;
@@ -40,7 +40,7 @@ inline ParseResult parseYgoProDeckJson(const std::string &content) {
   if (!root.is_object() || !root.contains("data") ||
       !root.at("data").is_array()) {
     result.errors.push_back(
-        {"expected a YGOProDeck object with a \"data\" array"});
+        {"expected a remote card-data object with a \"data\" array"});
     return result;
   }
 
@@ -51,7 +51,7 @@ inline ParseResult parseYgoProDeckJson(const std::string &content) {
       continue;
     }
     try {
-      Card card = detail::cardFromYgoProDeckJson(item);
+      Card card = detail::cardFromRemoteJson(item);
       if (card.cardId == 0) {
         result.errors.push_back({"skipped entry without a valid id"});
         continue;

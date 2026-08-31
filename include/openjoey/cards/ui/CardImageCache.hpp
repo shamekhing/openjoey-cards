@@ -16,18 +16,20 @@
 
 namespace openjoey::ui {
 
-// Downloads card images from YGOProdeck in a background thread.
-// Call Get() each frame for cards on screen; call PollAndLoad() each frame
-// to upload newly-downloaded images to GPU.
+// Downloads card images from the configured remote provider in a background
+// thread. Call Get() each frame for cards on screen; call PollAndLoad() each
+// frame to upload newly-downloaded images to GPU.
 // Single instance lives in AppContext and is shared across all screens.
 class CardImageCache {
 public:
+    // Base image URLs are supplied by the app's configuration layer — no
+    // provider defaults live in the cards domain.
     CardImageCache(std::filesystem::path imgDir,
-                   std::string ygoprodeckUrl = "https://images.ygoprodeck.com/images/cards/",
-                   std::string ygoprodeckUrlSmall = "https://images.ygoprodeck.com/images/cards_small/")
+                   std::string remoteImageUrl,
+                   std::string remoteImageUrlSmall)
         : imgDir_(std::move(imgDir)),
-          baseUrl_(std::move(ygoprodeckUrl)),
-          baseUrlSmall_(std::move(ygoprodeckUrlSmall)) {
+          imageUrl_(std::move(remoteImageUrl)),
+          imageUrlSmall_(std::move(remoteImageUrlSmall)) {
         worker_ = std::thread(&CardImageCache::workerLoop, this);
     }
 
@@ -117,9 +119,9 @@ private:
                 job = std::move(jobQueue_.front());
                 jobQueue_.pop();
             }
-            bool ok = curlDownload(baseUrl_ + std::to_string(job.id) + ".jpg", job.dest);
+            bool ok = curlDownload(imageUrl_ + std::to_string(job.id) + ".jpg", job.dest);
             if (!ok)
-                ok = curlDownload(baseUrlSmall_ + std::to_string(job.id) + ".jpg", job.dest);
+                ok = curlDownload(imageUrlSmall_ + std::to_string(job.id) + ".jpg", job.dest);
             if (ok) {
                 std::lock_guard<std::mutex> lk(mtx_);
                 completed_.push_back(job.id);
@@ -145,8 +147,8 @@ private:
     }
 
     std::filesystem::path            imgDir_;
-    std::string                      baseUrl_;
-    std::string                      baseUrlSmall_;
+    std::string                      imageUrl_;
+    std::string                      imageUrlSmall_;
     std::unordered_map<uint32_t, Texture2D> textures_;
     std::queue<Job>                  jobQueue_;
     std::vector<uint32_t>            completed_;
